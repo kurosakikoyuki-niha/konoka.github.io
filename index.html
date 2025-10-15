@@ -1,41 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>konoka.online</title>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      text-align: center;
-      background: #fff;
-      color: #111;
-      margin: 50px auto;
-      line-height: 1.8;
-      max-width: 500px;
-    }
-    hr {
-      border: none;
-      border-top: 3px solid #e00;
-      margin: 20px auto;
-      width: 90%;
-    }
-    a {
-      color: #e00;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Blue Archive - Profile Card (Editable)</title>
+<style>
+  /* ---------- 사용자 편집 영역 (쉽게 바꿀 수 있음) ---------- */
+  :root{
+    /* 이미지 파일 경로 (같은 폴더에 넣어두면 편함) */
+    --bg-image: url('background.jpg');      /* 배경 (전체) */
+    --character-image: url('character.png');/* 캐릭터 (왼쪽) */
+    --logo-image: url('bluearchive_logo.png'); /* 로고 (왼쪽 하단) */
+
+    /* 컬러 / 타이포그래피 */
+    --primary: #20527f; /* 네임/숫자 색상 */
+    --accent: #7fb8ef;  /* 코드 배경 등 */
+    --muted: #6b6f76;
+    --card-width: 1100px;
+    --card-height: 540px;
+
+    /* 오른쪽 사다리꼴(경사) 조정: 값이 클수록 더 가파른 경사
+       - 왼쪽에서 잘린 만큼의 % (예: 22%)로 생각하면 편함 */
+    --slant: 22%; 
+
+    /* 텍스트 사이즈 (간단 조정) */
+    --name-size: 64px;
+    --level-size: 18px;
+    --rank-size: 26px;
+  }
+
+  /* 기본 리셋 */
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg,#eef3f8, #ffffff);
+    font-family: "Noto Sans KR", "Segoe UI", Roboto, Arial, sans-serif;
+    color: #222;
+  }
+
+  /* 카드 컨테이너 */
+  .profile-card{
+    width: min(var(--card-width), calc(96vw));
+    height: min(var(--card-height), calc(56vh));
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow: 0 18px 40px rgba(17,30,60,0.15);
+    display:flex;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* 왼쪽 반투명 오버레이 (밝기 낮춤 + 캐릭터 배경) */
+  .left-panel{
+    width: 52%;
+    min-width: 420px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.92), rgba(255,255,255,0.82));
+    position:relative;
+    padding: 24px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  /* 캐릭터 이미지 (좌측에 충분히 크게) */
+  .character-wrap{
+    position: absolute;
+    left: 18px;
+    bottom: 8px;
+    width: calc(52% - 36px);
+    height: calc(100% - 48px);
+    pointer-events:none;
+  }
+  .character{
+    height:100%;
+    max-width:none;
+    object-fit:contain;
+    filter: drop-shadow(0 10px 30px rgba(16,25,40,0.28));
+  }
+
+  /* 좌측 로고 */
+  .logo{
+    width:120px;
+    opacity:0.92;
+    filter: drop-shadow(0 8px 14px rgba(16,25,40,0.12));
+  }
+
+  /* 오른쪽 정보 영역: 사다리꼴로 자름 (clip-path)
+     clip-path 폴리곤에서 두번째 좌표의 X값을 --slant로 조정 */
+  .info{
+    flex:1;
+    background: rgba(255,255,255,0.98);
+    padding: 38px 48px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:flex-start;
+    clip-path: polygon(var(--slant) 0%, 100% 0%, 100% 100%, var(--slant) 100%);
+    /* 약간의 내부 그림자 효과 */
+    box-shadow: inset -8px 0 20px rgba(30,60,90,0.03);
+  }
+
+  /* 최상단 레벨 / 이름 영역 */
+  .meta{
+    margin-bottom: 6px;
+    align-self:stretch;
+  }
+  .level{
+    font-size: var(--level-size);
+    color: var(--muted);
+    font-weight:600;
+  }
+  .name{
+    font-size: var(--name-size);
+    line-height:0.9;
+    color: var(--primary);
+    font-weight:700;
+    margin-top:6px;
+    margin-bottom:12px;
+    letter-spacing: -1px;
+  }
+
+  /* friend code 박스 (round) */
+  .friend-code{
+    display:inline-block;
+    padding:10px 16px;
+    background: linear-gradient(180deg, rgba(127,184,239,0.14), rgba(127,184,239,0.06));
+    color: var(--primary);
+    border-radius:10px;
+    font-weight:600;
+    box-shadow: 0 6px 18px rgba(37,90,140,0.06);
+    margin-bottom:22px;
+  }
+
+  /* 랭크 줄 */
+  .ranks{
+    display:flex;
+    gap:36px;
+    width:100%;
+    margin-top:8px;
+    align-items:flex-start;
+  }
+  .rank{
+    width: 33%;
+    text-align:center;
+    background: rgba(250,250,250,0.6);
+    border-radius:10px;
+    padding:14px 12px;
+    box-shadow: 0 8px 20px rgba(24,40,70,0.03);
+  }
+  .rank img{
+    width:72px;
+    height:auto;
+    display:block;
+    margin:0 auto 8px;
+  }
+  .rank .label{
+    font-size:15px;
+    color: #60666b;
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .rank .value{
+    font-size: var(--rank-size);
+    color: var(--primary);
+    font-weight:700;
+  }
+
+  /* introduction (하단) */
+  .intro-wrap{
+    margin-top:28px;
+    padding-top:18px;
+    border-top:1px solid rgba(30,50,70,0.06);
+    width:100%;
+    color:#333;
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+  }
+  .intro-title{
+    background: linear-gradient(180deg,#d7eeff, #bfe6ff);
+    padding:6px 10px;
+    border-radius:8px;
+    color: var(--primary);
+    font-weight:700;
+    transform: translateY(-8px);
+    box-shadow: 0 6px 14px rgba(33,82,140,0.06);
+  }
+  .intro{
+    flex:1;
+    font-size:16px;
+    color:#3b3f44;
+    line-height:1.6;
+    min-height:74px;
+  }
+
+  /* 편집 안내 (contenteditable 요소에 포커스 시 스타일) */
+  [contenteditable]{outline:none}
+  [contenteditable]:focus{
+    box-shadow: inset 0 -2px 0 #dfe9f6;
+  }
+
+  /* 반응형: 창 작아질 때 */
+  @media (max-width:1000px){
+    :root{--name-size:44px; --card-height:520px;}
+    .left-panel{width:50%}
+    .character-wrap{left:12px}
+  }
+  @media (max-width:740px){
+    .profile-card{flex-direction:column;height:auto;padding:12px;border-radius:12px}
+    .left-panel{width:100%; min-width:unset;padding:12px;order:2;height:180px}
+    .character-wrap{position:absolute;left:8px;bottom:8px;width:45%}
+    .info{order:1;clip-path:none;padding:20px}
+    .ranks{flex-direction:row;gap:12px;overflow:auto}
+    .rank{min-width:160px}
+  }
+
+  /* 작은 미세스타일 */
+  .muted-small{color:var(--muted); font-size:13px}
+</style>
 </head>
 <body>
-  <h2>konoka - kor - gmt+9</h2>
-  <hr>
+  <div class="profile-card" role="region" aria-label="Profile Card">
+    <!-- 왼쪽 패널: 로고 + (빈 공간은 배경 이미지) -->
+    <div class="left-panel">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <!-- 로고: 이미지를 바꿀 때는 --logo-image 수정 또는 직접 경로 삽입 -->
+        <img class="logo" src="" alt="Blue Archive Logo" style="background-image:var(--logo-image); background-size:contain; background-repeat:no-repeat; background-position:center;">
+      </div>
 
-  <p>youtube: <a href="https://youtube.com/@K_onoka">@konoka</a></p>
+      <!-- 빈 공간 유지 (원래 디자인의 왼쪽 여백) -->
+      <div style="height:14px"></div>
+    </div>
 
-  <p>email me: <a href="mailto:hi@konoka.online">hi@konoka.online</a></p>
+    <!-- 캐릭터 (왼쪽에 크게) -->
+    <div class="character-wrap" aria-hidden="true">
+      <!-- 실제 이미지는 inline style 배경 또는 <img>로 교체 가능.
+           바꾸려면 :root --character-image 를 수정하거나 아래 src에 경로를 넣으세요. -->
+      <img class="character" src="" alt="Character" style="background-image:var(--character-image); background-size:contain; background-repeat:no-repeat; background-position:left bottom;">
+    </div>
 
+    <!-- 오른쪽 정보 영역 (사다리꼴) -->
+    <div class="info">
+      <div class="meta">
+        <div class="level" contenteditable="true" title="레벨 수정 가능">Lv.81</div>
+        <div class="name" contenteditable="true" title="캐릭터명 수정 가능">Konoka</div>
+        <div class="friend-code" contenteditable="true" title="친구 코드 수정 가능">Friend Code : BFXBCTJN</div>
+      </div>
+
+      <div class="ranks" role="list">
+        <div class="rank" role="listitem">
+          <img src="" alt="Rank Badge" style="background-image: url('rank_silver.png'); background-size:contain; background-repeat:no-repeat; height:72px;">
+          <div class="label">Previous Total Assault</div>
+          <div class="value" contenteditable="true">Rank 76529</div>
+        </div>
+
+        <div class="rank" role="listitem">
+          <img src="" alt="Rank Badge" style="background-image: url('rank_bronze.png'); background-size:contain; background-repeat:no-repeat; height:72px;">
+          <div class="label">Previous Grand Assault</div>
+          <div class="value" contenteditable="true">Rank -</div>
+        </div>
+
+        <div class="rank" role="listitem">
+          <img src="" alt="Rank Badge" style="background-image: url('rank_gold.png'); background-size:contain; background-repeat:no-repeat; height:72px;">
+          <div class="label">Tactical Challenge</div>
+          <div class="value" contenteditable="true">Rank 2394</div>
+        </div>
+      </div>
+
+      <div class="intro-wrap">
+        <div class="intro-title">Introduction</div>
+        <div class="intro" contenteditable="true">이곳에 자기소개 문구를 입력하세요. (이 부분은 브라우저에서 바로 수정 가능합니다.)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- --------- 간단 사용법 안내 (주석으로 대체 가능) ---------- -->
+  <script>
+    /* 사용 팁 (브라우저에서 바로 수정 가능):
+       1) 이미지 교체:
+          - background.jpg, character.png, bluearchive_logo.png, rank_*.png 파일을 이 HTML과 같은 폴더에 넣으세요.
+          - 또는 :root에 있는 --bg-image / --character-image / --logo-image 변수를 수정하세요.
+          예) document.documentElement.style.setProperty('--bg-image','url("my_bg.png")')
+
+       2) 사다리꼴(경사) 각도 변경:
+          - :root의 --slant 값(예: "22%")을 줄이면 경사가 완만해지고, 늘리면 가파름.
+          예) document.documentElement.style.setProperty('--slant','28%')
+
+       3) 텍스트 바로 편집:
+          - 페이지에서 직접 레벨/이름/코드/랭크/소개 텍스트를 클릭하면 수정 가능합니다.
+          - 실 저장하려면 브라우저에서 "페이지 저장(파일 > 다른 이름으로 저장)"을 사용하거나, 변경된 값 복사.
+
+       4) 추가 조정:
+          - 글꼴을 더 이쁘게 쓰려면 head에 구글 폰트 링크 추가 후 body font-family 수정.
+    */
+
+    // 예시: JS로 이미지 경로를 동적으로 바꾸는 코드 (필요하면 주석 해제)
+    // document.documentElement.style.setProperty('--bg-image', 'url("background.jpg")');
+    // document.documentElement.style.setProperty('--character-image', 'url("character.png")');
+    // document.querySelector('.logo').src = 'bluearchive_logo.png';
+
+    // (선택) contenteditable 편집 내용을 로컬스토리지에 저장해 자동 복원할 수도 있음.
+  </script>
 </body>
 </html>
