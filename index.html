@@ -3,61 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile Card</title>
+  <title>joexyz</title>
+
   <style>
-    /* 전체 배경 설정 */
+    /* 로컬 폰트 적용 */
+    @font-face {
+      font-family: 'CustomFont';
+      src: url('font.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 전체 설정 */
     body {
       margin: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+      font-family: 'CustomFont', sans-serif;
+      color: #fff;
+    }
+
+    /* 배경 이미지 + 블러 오버레이 */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
       background: url('background.png') no-repeat center center/cover;
-      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      filter: blur(6px) brightness(0.9);
+      z-index: -1;
     }
 
     /* 카드 (리퀴드 글래스 스타일) */
     .card {
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      background-color: rgba(255, 255, 255, 0.25);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      padding: 40px 50px;
+      backdrop-filter: blur(25px) saturate(200%);
+      -webkit-backdrop-filter: blur(25px) saturate(200%);
+      background-color: rgba(255, 255, 255, 0.12);
+      border-radius: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      padding: 60px 80px;
       text-align: center;
-      color: #fff;
+      min-width: 340px;
     }
 
-    /* 이름 */
     .card h1 {
-      font-size: 1.8rem;
-      margin-bottom: 30px;
-      font-weight: 500;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      letter-spacing: 0.5px;
     }
 
     /* 버튼 컨테이너 */
     .buttons {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 25px;
     }
 
     /* 버튼 스타일 */
     .btn {
-      padding: 12px 28px;
+      padding: 14px 32px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.15);
       color: white;
       text-decoration: none;
-      font-weight: 500;
-      letter-spacing: 0.3px;
+      font-size: 1rem;
       transition: all 0.25s ease;
+      backdrop-filter: blur(10px);
     }
 
     .btn:hover {
-      background: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
     }
   </style>
