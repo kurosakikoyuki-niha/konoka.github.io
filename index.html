@@ -1,154 +1,280 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>Blue Archive Profile</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Noto Sans KR", sans-serif;
-      background: url("background.jpg") center/cover no-repeat;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Blue Archive — Profile (Fixed)</title>
+<style>
+  :root{
+    /* 이미지 경로 (같은 폴더에 넣어두면 편함) */
+    --bg: url("background.jpg");        /* 전체 배경(교실) */
+    --character: url("character.png");  /* 캐릭터 (PNG, 투명 가능) */
+    --logo: url("bluearchive_logo.png");/* 좌하단 로고 */
+    --badge1: url("rank_silver.png");
+    --badge2: url("rank_bronze.png");
+    --badge3: url("rank_gold.png");
 
-    .profile-card {
-      width: 1100px;
-      height: 600px;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(5px);
-      border-radius: 20px;
-      display: flex;
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-    }
+    /* 레이아웃 제어 */
+    --card-width: 1150px;   /* 전체 카드 너비 (브라우저에서 줄일 수 있음) */
+    --card-height: 560px;   /* 카드 높이 */
+    --slant: 24%;           /* 우측 사다리꼴 경사(수평 기준) - 값 조절 가능 */
 
-    /* 왼쪽 캐릭터 */
-    .character-side {
-      position: relative;
-      flex: 0 0 450px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.15);
-    }
+    /* 컬러/타이포 */
+    --primary: #1f4f86;
+    --muted: #6d7278;
+  }
 
-    .character-side img {
-      height: 95%;
-      object-fit: contain;
-    }
+  /* 기본 */
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg,#f3f7fb,#ffffff);
+    font-family: "Noto Sans KR", "Segoe UI", Roboto, Arial, sans-serif;
+    color:#222;
+  }
 
-    /* 오른쪽 정보 패널 */
-    .info-side {
-      flex: 1;
-      padding: 40px 60px;
-      color: #1c2b4a;
-    }
+  /* 카드 외곽: 배경 이미지를 카드보다 작게 보이게 조정 */
+  .stage{
+    width: min(var(--card-width), 96vw);
+    height: min(var(--card-height), 64vh);
+    position: relative;
+    border-radius:18px;
+    overflow: visible; /* 캐릭터가 아래로 살짝 삐져나오게 허용 */
+    padding: 12px;
+  }
 
-    .info-side h1 {
-      font-size: 48px;
-      margin: 0;
-      color: #19478a;
-    }
+  /* 전체 배경(카드 내부에 배경을 넣어 프레임을 컨트롤) */
+  .bg{
+    position:absolute;
+    inset:0;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow: 0 18px 40px rgba(10,30,60,0.12);
+  }
+  /* 배경 이미지를 card 내부에서 '작게' 보이도록 설정: background-size / position 조절 */
+  .bg::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image: var(--bg);
+    background-repeat:no-repeat;
+    /* background 크기를 줄여서 '원하시는 프레임'만 보이도록 함 */
+    background-size: 140%;      /* 이 값을 줄이면 더 작아짐(예:120%) */
+    background-position: center top; /* 배경 상단 중심을 보이게 */
+    filter: none;
+    transform: translateY(-6%); /* 상단을 더 보여주기 위해 위로 약간 이동 */
+    opacity:1;
+  }
 
-    .level {
-      font-size: 20px;
-      color: #666;
-      margin-bottom: 10px;
-    }
+  /* 카드 내용(투명 패널) : 중앙에 얇은 흰색 블러 패널을 깔아 배지/텍스트가 읽히게 함 */
+  .card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    padding: 18px;
+    pointer-events:none;
+  }
 
-    .friend-code {
-      background: #eaf2ff;
-      color: #19478a;
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 10px;
-      margin: 10px 0 30px;
-      font-weight: 600;
-    }
+  /* 왼쪽: 캐릭터 영역 (반투명 없음 — 배경 그대로 보이게) */
+  .left {
+    width: 52%;
+    position: relative;
+    pointer-events:auto;
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-start;
+    padding-left: 28px;
+  }
 
-    .rank-section {
-      display: flex;
-      gap: 50px;
-      margin-bottom: 40px;
-    }
+  .character-clip{
+    width: 480px;                 /* 캐릭터 가로 크기 — 필요 시 조절 */
+    height: calc(var(--card-height) - 36px);
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    /* 배경과 겹쳐 보이는 효과를 최소화하기 위해 아주 약한 배경을 둠(필요없으면 제거) */
+    background: rgba(255,255,255,0.02);
+    pointer-events:none;
+  }
 
-    .rank-box {
-      text-align: center;
-    }
+  .character{
+    position: absolute;
+    left: 8px;
+    bottom: -10%;                /* 하단을 잘라서 상반신만 보이게 함 */
+    height: 120%;                /* 키우면 더 상단만 보임(다리 잘림) */
+    object-fit: cover;
+    transform-origin: left bottom;
+    filter: drop-shadow(0 18px 34px rgba(10,25,45,0.28));
+    pointer-events:none;
+  }
 
-    .rank-box img {
-      height: 60px;
-      margin-bottom: 10px;
-    }
+  /* 좌하단 로고 (고정) */
+  .logo{
+    position: absolute;
+    left: 22px;
+    bottom: 18px;
+    width: 140px;
+    height: 48px;
+    background-image: var(--logo);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    pointer-events:auto;
+  }
 
-    .rank-title {
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
-    }
+  /* 오른쪽 정보 패널: 불투명한 화이트 사다리꼴 */
+  .right {
+    width: 48%;
+    min-width: 380px;
+    height: calc(var(--card-height) - 36px);
+    position: relative;
+    pointer-events:auto;
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-start;
+  }
 
-    .rank-number {
-      font-size: 28px;
-      font-weight: bold;
-      color: #19478a;
-    }
+  .info-panel{
+    position:absolute;
+    right: 18px;
+    top: 18px;
+    bottom: 18px;
+    width: calc(100% - 36px);
+    background: rgba(255,255,255,1); /* 불투명 흰색 */
+    /* 사다리꼴 모양(왼쪽 잘림) — --slant 값으로 조절 */
+    clip-path: polygon(var(--slant) 0%, 100% 0%, 100% 100%, var(--slant) 100%);
+    border-radius: 12px;
+    padding: 36px 44px;
+    box-shadow: 0 10px 26px rgba(12,30,60,0.08);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
 
-    .introduction {
-      border-top: 2px solid #c5d4f7;
-      padding-top: 15px;
-      font-size: 16px;
-      color: #333;
-    }
+  .level { font-size:18px; color:var(--muted); font-weight:600; margin-bottom:6px; }
+  .name { font-size:64px; color:var(--primary); font-weight:700; margin:0 0 8px; line-height:0.9; }
+  .friend { display:inline-block; background:#eaf4ff; color:var(--primary); padding:8px 14px; border-radius:10px; font-weight:700; margin-bottom:18px; }
 
-    .logo {
-      position: absolute;
-      bottom: 15px;
-      left: 20px;
-      width: 150px;
-      opacity: 0.8;
-    }
-  </style>
+  .ranks{ display:flex; gap:28px; margin-top:10px; align-items:stretch; }
+  .rank {
+    flex:1;
+    text-align:center;
+    padding:18px 8px;
+    border-radius:8px;
+    background: rgba(250,250,250,1);
+    box-shadow: 0 6px 16px rgba(20,40,80,0.03);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:center;
+    gap:8px;
+  }
+  .rank .badge{ width:72px; height:72px; background-size:contain; background-repeat:no-repeat; background-position:center; }
+  .rank .title{ font-size:14px; color:#5f6468; font-weight:700; }
+  .rank .value{ font-size:28px; color:var(--primary); font-weight:800; margin-top:6px; }
+
+  .intro { margin-top:20px; border-top:1px solid rgba(30,80,150,0.06); padding-top:16px; color:#333; font-size:15px; line-height:1.6; }
+
+  /* editable 스타일 */
+  [contenteditable]{ outline:none }
+  [contenteditable]:focus{ box-shadow: inset 0 -2px 0 rgba(30,80,150,0.06); }
+
+  /* responsive */
+  @media (max-width:1100px){
+    :root{ --card-height:520px; }
+    .character-clip{ width:420px; }
+    .name{ font-size:48px; }
+  }
+  @media (max-width:780px){
+    .stage{ padding:6px; }
+    .bg::before{ background-size:180%; transform: translateY(-8%); }
+    .character-clip{ width:320px; height:320px; position: absolute; left:8px; bottom:6px; }
+    .character{ height:160%; bottom:-28%; left: -10%; }
+    .info-panel{ position:relative; width:100%; clip-path:none; border-radius:12px; padding:16px; }
+    .right{ width:100%; min-width:unset; }
+    .left{ width:100%; padding-left:12px; order:2; }
+    .card{ flex-direction:column-reverse; align-items:stretch; gap:10px; }
+    .name{ font-size:36px; }
+  }
+</style>
 </head>
 <body>
-  <div class="profile-card">
-    <!-- 왼쪽 캐릭터 -->
-    <div class="character-side">
-      <img src="character.png" alt="Character">
-      <img src="logo.png" class="logo" alt="Blue Archive Logo">
-    </div>
+  <div class="stage" role="main" aria-label="Profile stage">
+    <div class="bg" aria-hidden="true"></div>
 
-    <!-- 오른쪽 정보 -->
-    <div class="info-side">
-      <div class="level">Lv.81</div>
-      <h1>Konoka</h1>
-      <div class="friend-code">Friend Code : BFXBCTJN</div>
+    <div class="card">
+      <!-- LEFT: character + logo -->
+      <div class="left" aria-hidden="false">
+        <div class="character-clip" aria-hidden="true">
+          <!-- 실제 캐릭터 이미지는 아래 <img>의 src를 바꾸거나 :root --character 변수를 활용하세요.
+               여기선 <img> 사용 — 투명 PNG 권장 -->
+          <img class="character" src="character.png" alt="Character">
+        </div>
 
-      <div class="rank-section">
-        <div class="rank-box">
-          <img src="badge1.png" alt="Rank Badge">
-          <div class="rank-title">Previous Total Assault</div>
-          <div class="rank-number">Rank 76529</div>
-        </div>
-        <div class="rank-box">
-          <img src="badge2.png" alt="Rank Badge">
-          <div class="rank-title">Previous Grand Assault</div>
-          <div class="rank-number">Rank -</div>
-        </div>
-        <div class="rank-box">
-          <img src="badge3.png" alt="Rank Badge">
-          <div class="rank-title">Tactical Challenge</div>
-          <div class="rank-number">Rank 2394</div>
-        </div>
+        <!-- logo 좌하단 표시 (stage 내부 좌하단) -->
+        <div class="logo" role="img" aria-label="Blue Archive logo"></div>
       </div>
 
-      <div class="introduction">
-        이곳에 자기소개 문구를 입력하세요. (이 부분은 HTML에서 직접 수정 가능)
+      <!-- RIGHT: info panel (사다리꼴 흰색) -->
+      <div class="right" aria-hidden="false">
+        <section class="info-panel" aria-label="Profile info">
+          <div class="meta">
+            <div class="level" contenteditable="true">Lv.81</div>
+            <div class="name" contenteditable="true">Konoka</div>
+            <div class="friend" contenteditable="true">Friend Code : BFXBCTJN</div>
+          </div>
+
+          <div class="ranks" role="list">
+            <div class="rank" role="listitem">
+              <div class="badge" style="background-image: var(--badge1);"></div>
+              <div class="title">Previous Total Assault</div>
+              <div class="value" contenteditable="true">Rank 76529</div>
+            </div>
+            <div class="rank" role="listitem">
+              <div class="badge" style="background-image: var(--badge2);"></div>
+              <div class="title">Previous Grand Assault</div>
+              <div class="value" contenteditable="true">Rank -</div>
+            </div>
+            <div class="rank" role="listitem">
+              <div class="badge" style="background-image: var(--badge3);"></div>
+              <div class="title">Tactical Challenge</div>
+              <div class="value" contenteditable="true">Rank 2394</div>
+            </div>
+          </div>
+
+          <div class="intro" contenteditable="true">
+            이곳에 자기소개 문구를 입력하세요. (이 부분은 HTML에서 직접 수정 가능)
+          </div>
+        </section>
       </div>
     </div>
   </div>
+
+  <script>
+    /* 빠른 커스터마이즈:
+       1) 이미지 교체: 파일명을 바꿔서 같은 폴더에 넣거나 아래 코드로 동적 설정
+          document.documentElement.style.setProperty('--bg','url("your-bg.jpg")');
+          document.querySelector('.character').src = 'your-character.png';
+          document.documentElement.style.setProperty('--logo','url("your-logo.png")');
+          document.documentElement.style.setProperty('--badge1','url("badge1.png")');
+
+       2) 오른쪽 사다리꼴 경사 조정: --slant 값 변경 (ex: '18%')
+          document.documentElement.style.setProperty('--slant','20%');
+
+       3) 캐릭터 상/하 위치/크기 미세조정: CSS .character { height:120%; bottom:-10%; left:8px; }
+          값을 바꿔서 원하는 프레이밍을 찾으세요.
+
+       참고: 상단 배경 프레이밍을 더 올리고 싶으면 .bg::before transform translateY 값을 조절하세요.
+    */
+  </script>
 </body>
 </html>
