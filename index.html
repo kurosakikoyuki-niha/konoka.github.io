@@ -2,11 +2,11 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>joexyz</title>
 
   <style>
-    /* 로컬 폰트 적용 */
+    /* 커스텀 폰트 불러오기 */
     @font-face {
       font-family: 'CustomFont';
       src: url('font.ttf') format('truetype');
@@ -14,20 +14,32 @@
       font-style: normal;
     }
 
-    /* 전체 설정 */
-    body {
+    /* 전체 화면 설정 */
+    html, body {
       margin: 0;
-      height: 100vh;
+      height: 100%;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      background: #000;
       font-family: 'CustomFont', sans-serif;
-      color: #fff;
     }
 
-    /* 배경 이미지 + 블러 오버레이 */
-    body::before {
+    /* 화면 비율 20:9 유지 */
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: calc(100vw * 9 / 20); /* 20:9 비율 */
+      max-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 배경 이미지 + 블러 */
+    .viewport::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -38,39 +50,42 @@
 
     /* 카드 (리퀴드 글래스 스타일) */
     .card {
-      backdrop-filter: blur(25px) saturate(200%);
-      -webkit-backdrop-filter: blur(25px) saturate(200%);
-      background-color: rgba(255, 255, 255, 0.12);
-      border-radius: 25px;
+      backdrop-filter: blur(25px) saturate(220%);
+      -webkit-backdrop-filter: blur(25px) saturate(220%);
+      background-color: rgba(255, 255, 255, 0.18);
+      border-radius: 28px;
       border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-      padding: 60px 80px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+      padding: 80px 100px;
       text-align: center;
-      min-width: 340px;
+      color: #fff;
+      min-width: 420px;
     }
 
+    /* 이름 */
     .card h1 {
-      font-size: 2rem;
-      margin-bottom: 40px;
+      font-size: 2.6rem;
+      margin-bottom: 50px;
       letter-spacing: 0.5px;
+      font-weight: 400;
     }
 
     /* 버튼 컨테이너 */
     .buttons {
       display: flex;
       justify-content: center;
-      gap: 25px;
+      gap: 35px;
     }
 
     /* 버튼 스타일 */
     .btn {
-      padding: 14px 32px;
-      border-radius: 12px;
+      padding: 16px 36px;
+      border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.35);
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.18);
       color: white;
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 1.1rem;
       transition: all 0.25s ease;
       backdrop-filter: blur(10px);
     }
@@ -79,14 +94,31 @@
       background: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
     }
+
+    /* 모바일 대응 */
+    @media (max-width: 768px) {
+      .card {
+        padding: 60px 70px;
+        min-width: 300px;
+      }
+      .card h1 {
+        font-size: 2rem;
+      }
+      .btn {
+        padding: 12px 28px;
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>joexyz</h1>
-    <div class="buttons">
-      <a href="#" class="btn">YouTube</a>
-      <a href="#" class="btn">Discord</a>
+  <div class="viewport">
+    <div class="card">
+      <h1>joexyz</h1>
+      <div class="buttons">
+        <a href="#" class="btn">YouTube</a>
+        <a href="#" class="btn">Discord</a>
+      </div>
     </div>
   </div>
 </body>
