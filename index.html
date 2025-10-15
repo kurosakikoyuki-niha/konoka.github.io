@@ -1,123 +1,89 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>joexyz</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>joexyz</title>
+<style>
+  @font-face {
+    font-family: 'CustomFont';
+    src: url('font.ttf') format('truetype');
+  }
 
-  <style>
-    /* 커스텀 폰트 불러오기 */
-    @font-face {
-      font-family: 'CustomFont';
-      src: url('font.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'CustomFont', serif;
+  }
 
-    /* 전체 화면 설정 */
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-      font-family: 'CustomFont', sans-serif;
-    }
+  .viewport {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    aspect-ratio: 20 / 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('background.png') no-repeat center center/cover;
+  }
 
-    /* 화면 비율 20:9 유지 */
-    .viewport {
-      position: relative;
-      width: 100vw;
-      height: calc(100vw * 9 / 20); /* 20:9 비율 */
-      max-height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  .viewport::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('background.png') no-repeat center center/cover;
+    filter: blur(6px) brightness(0.9);
+    z-index: 0;
+  }
 
-    /* 배경 이미지 + 블러 */
-    .viewport::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url('background.png') no-repeat center center/cover;
-      filter: blur(6px) brightness(0.9);
-      z-index: -1;
-    }
+  .glass {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 4rem;
+    border-radius: 20px;
+    background: rgba(40, 40, 40, 0.45);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(25px);
+    text-align: center;
+  }
 
-    /* 카드 (리퀴드 글래스 스타일) */
-    .card {
-      backdrop-filter: blur(25px) saturate(220%);
-      -webkit-backdrop-filter: blur(25px) saturate(220%);
-      background-color: rgba(255, 255, 255, 0.18);
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
-      padding: 80px 100px;
-      text-align: center;
-      color: #fff;
-      min-width: 420px;
-    }
+  h1 {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1.8rem;
+  }
 
-    /* 이름 */
-    .card h1 {
-      font-size: 2.6rem;
-      margin-bottom: 50px;
-      letter-spacing: 0.5px;
-      font-weight: 400;
-    }
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+  }
 
-    /* 버튼 컨테이너 */
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 35px;
-    }
+  .links a {
+    text-decoration: none;
+    padding: 0.6rem 1.4rem;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    color: white;
+    font-size: 0.95rem;
+    transition: 0.25s;
+  }
 
-    /* 버튼 스타일 */
-    .btn {
-      padding: 16px 36px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: rgba(255, 255, 255, 0.18);
-      color: white;
-      text-decoration: none;
-      font-size: 1.1rem;
-      transition: all 0.25s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    .btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-    }
-
-    /* 모바일 대응 */
-    @media (max-width: 768px) {
-      .card {
-        padding: 60px 70px;
-        min-width: 300px;
-      }
-      .card h1 {
-        font-size: 2rem;
-      }
-      .btn {
-        padding: 12px 28px;
-        font-size: 1rem;
-      }
-    }
-  </style>
+  .links a:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+</style>
 </head>
 <body>
   <div class="viewport">
-    <div class="card">
+    <div class="glass">
       <h1>joexyz</h1>
-      <div class="buttons">
-        <a href="#" class="btn">YouTube</a>
-        <a href="#" class="btn">Discord</a>
+      <div class="links">
+        <a href="#">YouTube</a>
+        <a href="#">Discord</a>
       </div>
     </div>
   </div>
