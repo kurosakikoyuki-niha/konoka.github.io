@@ -1,153 +1,73 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>Blue Archive Profile</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Card</title>
   <style>
+    /* 전체 배경 설정 */
     body {
       margin: 0;
-      font-family: "Noto Sans KR", sans-serif;
-      background: url("background.jpg") center/cover no-repeat;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      background: url('background.png') no-repeat center center/cover;
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
     }
 
-    .profile-card {
-      width: 1100px;
-      height: 600px;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(5px);
+    /* 카드 (리퀴드 글래스 스타일) */
+    .card {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.25);
       border-radius: 20px;
-      display: flex;
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-    }
-
-    /* 왼쪽 캐릭터 */
-    .character-side {
-      position: relative;
-      flex: 0 0 450px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .character-side img {
-      height: 95%;
-      object-fit: contain;
-    }
-
-    /* 오른쪽 정보 패널 */
-    .info-side {
-      flex: 1;
-      padding: 40px 60px;
-      color: #1c2b4a;
-    }
-
-    .info-side h1 {
-      font-size: 48px;
-      margin: 0;
-      color: #19478a;
-    }
-
-    .level {
-      font-size: 20px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    .friend-code {
-      background: #eaf2ff;
-      color: #19478a;
-      display: inline-block;
-      padding: 8px 16px;
-      border-radius: 10px;
-      margin: 10px 0 30px;
-      font-weight: 600;
-    }
-
-    .rank-section {
-      display: flex;
-      gap: 50px;
-      margin-bottom: 40px;
-    }
-
-    .rank-box {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      padding: 40px 50px;
       text-align: center;
+      color: #fff;
     }
 
-    .rank-box img {
-      height: 60px;
-      margin-bottom: 10px;
+    /* 이름 */
+    .card h1 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      font-weight: 500;
     }
 
-    .rank-title {
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
+    /* 버튼 컨테이너 */
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
     }
 
-    .rank-number {
-      font-size: 28px;
-      font-weight: bold;
-      color: #19478a;
+    /* 버튼 스타일 */
+    .btn {
+      padding: 12px 28px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      transition: all 0.25s ease;
     }
 
-    .introduction {
-      border-top: 2px solid #c5d4f7;
-      padding-top: 15px;
-      font-size: 16px;
-      color: #333;
-    }
-
-    .logo {
-      position: absolute;
-      bottom: 15px;
-      left: 20px;
-      width: 150px;
-      opacity: 0.8;
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
-  <div class="profile-card">
-    <!-- 왼쪽 캐릭터 -->
-    <div class="character-side">
-      <img src="character.png" alt="Character">
-      <img src="logo.png" class="logo" alt="Blue Archive Logo">
-    </div>
-
-    <!-- 오른쪽 정보 -->
-    <div class="info-side">
-      <div class="level">Lv.81</div>
-      <h1>Konoka</h1>
-      <div class="friend-code">Friend Code : BFXBCTJN</div>
-
-      <div class="rank-section">
-        <div class="rank-box">
-          <img src="badge1.png" alt="Rank Badge">
-          <div class="rank-title">Previous Total Assault</div>
-          <div class="rank-number">Rank 76529</div>
-        </div>
-        <div class="rank-box">
-          <img src="badge2.png" alt="Rank Badge">
-          <div class="rank-title">Previous Grand Assault</div>
-          <div class="rank-number">Rank -</div>
-        </div>
-        <div class="rank-box">
-          <img src="badge3.png" alt="Rank Badge">
-          <div class="rank-title">Tactical Challenge</div>
-          <div class="rank-number">Rank 2394</div>
-        </div>
-      </div>
-
-      <div class="introduction">
-        이곳에 자기소개 문구를 입력하세요. (이 부분은 HTML에서 직접 수정 가능)
-      </div>
+  <div class="card">
+    <h1>joexyz</h1>
+    <div class="buttons">
+      <a href="#" class="btn">YouTube</a>
+      <a href="#" class="btn">Discord</a>
     </div>
   </div>
 </body>
