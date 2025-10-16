@@ -42,22 +42,18 @@
   .glass {
     position: relative;
     z-index: 1;
-    padding: 3rem 4rem;
+    padding: 3rem 4rem 4rem;
     border-radius: 25px;
-    background: rgba(255, 255, 255, 0.08); /* ✨ 투명 강화 */
+    background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(25px) saturate(180%);
     -webkit-backdrop-filter: blur(25px) saturate(180%);
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.25); /* 유리 테두리 */
-    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.8s cubic-bezier(0.42, 0, 0.58, 1); /* 느림→빠름→느림 */
     max-width: 420px;
     width: 80%;
-  }
-
-  .glass:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: scale(1.02);
+    overflow: hidden;
   }
 
   h1 {
@@ -72,6 +68,7 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 1.2rem;
+    margin-bottom: 1rem;
   }
 
   .links a {
@@ -91,21 +88,90 @@
     transform: translateY(-2px);
   }
 
+  /* ▼ 숨겨진 텍스트 영역 */
+  .extra-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    color: #fff;
+    font-size: 1rem;
+    margin-top: 1rem;
+    transition: all 0.8s cubic-bezier(0.42, 0, 0.58, 1); /* 느림→빠름→느림 */
+  }
+
+  .glass.expanded .extra-content {
+    max-height: 300px;
+    opacity: 1;
+  }
+
+  /* ▼ 하단 = 버튼 (사각형 제거) */
+  .toggle-btn {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .toggle-btn div {
+    width: 20px;
+    height: 2px;
+    background: white;
+    position: relative;
+    transition: all 0.6s cubic-bezier(0.42, 0, 0.58, 1); /* 느림→빠름→느림 */
+  }
+
+  .toggle-btn div::before,
+  .toggle-btn div::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: white;
+    left: 0;
+    transition: all 0.6s cubic-bezier(0.42, 0, 0.58, 1); /* 느림→빠름→느림 */
+  }
+
+  .toggle-btn div::before {
+    top: -6px;
+  }
+
+  .toggle-btn div::after {
+    top: 6px;
+  }
+
+  /* ▼ 확장 시 아이콘 변화 (= → ✕ 모션) */
+  .glass.expanded .toggle-btn div {
+    transform: rotate(45deg);
+  }
+
+  .glass.expanded .toggle-btn div::before {
+    transform: rotate(90deg);
+    top: 0;
+  }
+
+  .glass.expanded .toggle-btn div::after {
+    opacity: 0;
+  }
+
   /* 📱 모바일 대응 */
   @media (max-width: 600px) {
     .glass {
       width: 85%;
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.5rem 3rem;
       border-radius: 20px;
       background: rgba(255, 255, 255, 0.10);
       backdrop-filter: blur(30px) saturate(200%);
     }
-
     h1 {
       font-size: 2rem;
       margin-bottom: 1.5rem;
     }
-
     .links a {
       font-size: 1rem;
       padding: 0.7rem 1.3rem;
@@ -115,13 +181,33 @@
 </head>
 <body>
   <div class="viewport">
-    <div class="glass">
+    <div class="glass" id="glassCard">
       <h1>itsuminn</h1>
       <div class="links">
         <a href="https://youtube.com/@k_onoka">Youtube</a>
         <a href="https://discord.gg/2cXDyfxb">Discord</a>
       </div>
+
+      <div class="extra-content" id="extraContent">
+        <p>이곳은 itsuminn의 공식 링크 페이지입니다.<br>
+        유튜브와 디스코드 외에도 다양한 프로젝트를 준비 중이에요.<br>
+        곧 새로운 컨텐츠로 찾아올게요!</p>
+      </div>
+
+      <!-- = 버튼 -->
+      <div class="toggle-btn" id="toggleBtn">
+        <div></div>
+      </div>
     </div>
   </div>
+
+  <script>
+    const glass = document.getElementById('glassCard');
+    const toggleBtn = document.getElementById('toggleBtn');
+
+    toggleBtn.addEventListener('click', () => {
+      glass.classList.toggle('expanded');
+    });
+  </script>
 </body>
 </html>
