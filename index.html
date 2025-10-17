@@ -1,207 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>itsuminn</title>
   <link rel="icon" type="image/x-icon" href="/favicon.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>itsuminn</title>
-<style>
-  @font-face {
-    font-family: 'CustomFont';
-    src: url('font1.ttf') format('truetype');
-  }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: 'CustomFont', serif;
-    background: black;
-  }
+  <style>
+    @font-face {
+      font-family: 'CustomFont';
+      src: url('font1.ttf') format('truetype');
+    }
 
-  .viewport {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: url('background.png') no-repeat center center/cover;
-  }
+    :root {
+      --card-w: 420px;
+      --card-h: 260px;
+      --ease: cubic-bezier(.65,0,.35,1);
+    }
 
-  .viewport::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: url('background.png') no-repeat center center/cover;
-    filter: blur(3px) brightness(0.9);
-    z-index: 0;
-  }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'CustomFont', serif;
+      background: black;
+      transition: background .8s var(--ease);
+    }
 
-  .glass {
-    position: relative;
-    z-index: 1;
-    padding: 3rem 4rem 4rem;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-    max-width: 420px;
-    width: 80%;
-    overflow: hidden;
-  }
+    .viewport {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url('background-day.png') no-repeat center/cover;
+      transition: background-image .4s ease-in-out, filter .4s ease-in-out;
+    }
 
-  h1 {
-    font-size: 2.6rem;
-    color: white;
-    margin-bottom: 2rem;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  }
+    .viewport.night {
+      background: url('background-night.png') no-repeat center/cover;
+      filter: brightness(.85);
+    }
 
-  .links {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    margin-bottom: 1rem;
-  }
+    .viewport::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      filter: blur(4px) brightness(.95);
+      z-index: 0;
+    }
 
-  .links a {
-    text-decoration: none;
-    padding: 0.8rem 1.8rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 12px;
-    color: white;
-    font-size: 1.1rem;
-    transition: 0.25s;
-    backdrop-filter: blur(10px);
-  }
-
-  .links a:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .extra-content {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    color: #fff;
-    font-size: 1rem;
-    margin-top: 1rem;
-    transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-
-  .glass.expanded .extra-content {
-    max-height: 300px;
-    opacity: 1;
-  }
-
-  .toggle-btn {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 26px;
-    height: 20px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .toggle-btn div {
-    width: 20px;
-    height: 2px;
-    background: white;
-    position: relative;
-    transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-
-  .toggle-btn div::before,
-  .toggle-btn div::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background: white;
-    left: 0;
-    transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-
-  .toggle-btn div::before {
-    top: -6px;
-  }
-
-  .toggle-btn div::after {
-    top: 6px;
-  }
-
-  .glass.expanded .toggle-btn div {
-    transform: rotate(45deg);
-  }
-
-  .glass.expanded .toggle-btn div::before {
-    transform: rotate(90deg);
-    top: 0;
-  }
-
-  .glass.expanded .toggle-btn div::after {
-    opacity: 0;
-  }
-
-  @media (max-width: 600px) {
     .glass {
-      width: 85%;
-      padding: 2rem 1.5rem 3rem;
-      border-radius: 20px;
+      position: relative;
+      z-index: 1;
+      width: min(80%, var(--card-w));
+      height: var(--card-h);
+      padding: 3rem 3.5rem;
+      border-radius: 25px;
       background: rgba(255, 255, 255, 0.10);
-      backdrop-filter: blur(30px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow:
+        inset 0 0 20px rgba(255,255,255,0.05),
+        0 8px 40px rgba(0,0,0,0.35);
+      backdrop-filter: blur(28px) saturate(200%) contrast(105%);
+      text-align: center;
+      overflow: hidden;
+      transition:
+        width .8s var(--ease),
+        height .8s var(--ease),
+        padding .8s var(--ease),
+        background .8s var(--ease),
+        box-shadow .8s var(--ease);
     }
+
+    .glass.expanded {
+      --card-h: 360px;
+      background: rgba(255,255,255,0.14);
+      box-shadow:
+        inset 0 0 25px rgba(255,255,255,0.08),
+        0 10px 45px rgba(0,0,0,0.45);
+    }
+
+    .glass.about-mode {
+      --card-w: 480px;
+      --card-h: 55vh;
+      background: rgba(15,15,25,0.75);
+      box-shadow: 0 0 80px rgba(0,0,0,0.6);
+      padding: 5rem 4rem;
+    }
+
     h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
+      font-size: 2.6rem;
+      color: white;
+      margin-bottom: 2rem;
     }
+
+    .links {
+      display: flex;
+      justify-content: center;
+      gap: 1.6rem;
+      margin-bottom: 1rem;
+      flex-wrap: nowrap;
+    }
+
     .links a {
-      font-size: 1rem;
-      padding: 0.7rem 1.3rem;
+      text-decoration: none;
+      padding: 0.8rem 1.8rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      color: white;
+      font-size: 1.15rem;
+      transition: 0.25s;
+      white-space: nowrap;
     }
-  }
-</style>
+
+    .links a:hover {
+      background: rgba(255,255,255,0.35);
+      transform: translateY(-2px);
+    }
+
+    .extra-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      color: #fff;
+      transition: all .8s var(--ease);
+    }
+
+    .glass.expanded .extra-content {
+      max-height: 400px;
+      opacity: 1;
+    }
+
+    .about-btn {
+      display: block;
+      margin: 0.8rem 0 1rem 0;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .about-btn:hover {
+      color: #ffd966;
+    }
+
+    .about-section {
+      display: none;
+      opacity: 0;
+      transition: opacity .5s var(--ease);
+      color: white; /* ✅ 텍스트 흰색 */
+    }
+
+    .about-section.active {
+      display: block;
+      opacity: 1;
+    }
+
+    .profile-img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      margin-bottom: 1.5rem;
+      border: 2px solid rgba(255,255,255,0.5);
+      object-fit: cover;
+    }
+
+    .skills {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.2rem 0;
+    }
+
+    .skill {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      padding: .4rem 1rem;
+      color: white; /* ✅ 텍스트 흰색 */
+    }
+
+    .sns {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .sns a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: .3s;
+    }
+
+    .sns a:hover {
+      color: #ffd966;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .3s;
+    }
+
+    .back-btn.visible {
+      display: flex;
+      opacity: 1;
+    }
+
+    .toggle-btn {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity .3s var(--ease);
+    }
+
+    .toggle-btn div {
+      width: 20px;
+      height: 2px;
+      background: white;
+      position: relative;
+      transition: all .6s var(--ease);
+    }
+
+    .toggle-btn div::before,
+    .toggle-btn div::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background: white;
+      left: 0;
+      transition: all .6s var(--ease);
+    }
+
+    .toggle-btn div::before {
+      top: -6px;
+    }
+
+    .toggle-btn div::after {
+      top: 6px;
+    }
+
+    .glass.expanded .toggle-btn div {
+      transform: rotate(45deg);
+    }
+
+    .glass.expanded .toggle-btn div::before {
+      transform: rotate(90deg);
+      top: 0;
+    }
+
+    .glass.expanded .toggle-btn div::after {
+      opacity: 0;
+    }
+
+    .glass.about-mode .toggle-btn {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background .3s ease-in-out, transform 0.6s ease;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .theme-toggle.rotate {
+      transform: rotate(360deg);
+    }
+  </style>
 </head>
+
 <body>
-  <div class="viewport">
+  <div class="viewport" id="viewport">
     <div class="glass" id="glassCard">
-      <h1>itsuminn</h1>
-      <div class="links">
-        <a href="https://youtube.com/@k_onoka">Youtube</a>
-        <a href="https://discord.gg/2cXDyfxb">Discord</a>
-        <a href="https://x.com/itsuminn_">X</a>
+      <button class="theme-toggle" id="themeToggle"><span id="themeIcon">🌙</span></button>
+      <button class="back-btn" id="backBtn">←</button>
+
+      <div class="main-section" id="mainSection">
+        <h1>itsuminn</h1>
+        <div class="links">
+          <a href="https://youtube.com/@k_onoka">Youtube</a>
+          <a href="https://discord.gg/2cXDyfxb">Discord</a>
+          <a href="https://x.com/itsuminn_">X</a>
+        </div>
+        <div class="extra-content" id="extraContent">
+          <p>
+            Blue Archive<br>
+            KR - BFXBCTJN<br>
+            JP - BTXPDBDZ
+          </p>
+          <a href="#" class="about-btn" id="aboutBtn">About Me</a>
+          <p>Contact - itsuminn455@gmail.com</p>
+        </div>
       </div>
 
-      <div class="extra-content" id="extraContent">
-        <p>Blue Archive<br>KR - BFXBCTJN<br>JP - BTXPDBDZ</p>
+      <div class="about-section" id="aboutSection">
+        <img src="profile.png" class="profile-img">
+        <h1>itsuminn</h1>
+        <p>Not yet. Go back!</p>
+        <div class="skills">
+        </div>
+        <!-- ✅ YouTube, Discord 제거 -->
+        <div class="sns">
+        </div>
       </div>
 
-      <div class="toggle-btn" id="toggleBtn">
-        <div></div>
-      </div>
+      <div class="toggle-btn" id="toggleBtn"><div></div></div>
     </div>
   </div>
+
+  <audio id="bgm" src="sound.mp3" loop></audio>
 
   <script>
     const glass = document.getElementById('glassCard');
     const toggleBtn = document.getElementById('toggleBtn');
+    const viewport = document.getElementById('viewport');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const bgm = document.getElementById('bgm');
+    const aboutBtn = document.getElementById('aboutBtn');
+    const mainSection = document.getElementById('mainSection');
+    const aboutSection = document.getElementById('aboutSection');
+    const backBtn = document.getElementById('backBtn');
+    let isNight = false;
 
-    toggleBtn.addEventListener('click', () => {
+    bgm.volume = 0.25;
+
+    window.addEventListener('load', () => {
+      const hour = new Date().getHours();
+      if (hour >= 20 || hour < 5) {
+        isNight = true;
+        viewport.classList.add('night');
+        themeIcon.textContent = '☀️';
+      } else {
+        viewport.classList.remove('night');
+        themeIcon.textContent = '🌙';
+      }
+      bgm.play().catch(() => {
+        window.addEventListener('click', () => bgm.play(), { once: true });
+      });
+    });
+
+    themeToggle.addEventListener('click', () => {
+      themeToggle.classList.add('rotate');
+      setTimeout(() => themeToggle.classList.remove('rotate'), 600);
+
+      isNight = !isNight;
+      viewport.classList.toggle('night', isNight);
+      themeIcon.textContent = isNight ? '☀️' : '🌙';
+    });
+
+    aboutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      glass.classList.add('about-mode');
+      mainSection.style.display = 'none';
+      aboutSection.classList.add('active');
+      backBtn.classList.add('visible');
+    });
+
+    toggleBtn.addEventListener('click', e => {
+      e.stopPropagation();
       glass.classList.toggle('expanded');
+    });
+
+    backBtn.addEventListener('click', () => {
+      glass.classList.remove('about-mode');
+      aboutSection.classList.remove('active');
+      mainSection.style.display = 'block';
+      backBtn.classList.remove('visible');
     });
   </script>
 </body>
