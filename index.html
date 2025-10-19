@@ -156,39 +156,42 @@
 
     .about-section {
       display: none;
-      opacity: 0;
-      transition: opacity .5s var(--ease);
       color: white;
+      height: 100%;
+      position: relative;
     }
 
-    .main-section,
-    .about-section {
-      transition: opacity .5s ease-in-out;
-      opacity: 1;
+    .about-scroll {
+      overflow-y: auto;
+      max-height: calc(55vh - 170px);
+      padding-right: 6px;
     }
 
-    .main-section.fade-out,
-    .about-section.fade-out {
-      opacity: 0;
-      pointer-events: none;
+    .about-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .about-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .about-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.35);
+      border-radius: 10px;
+    }
+    .about-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.5);
     }
 
-    .main-section.fade-in,
-    .about-section.fade-in {
-      opacity: 1;
-    }
-
-
-    .about-section.active {
-      display: block;
-      opacity: 1;
+    @media (max-width: 600px) {
+      .about-scroll::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     .profile-img {
       width: 110px;
       height: 110px;
       border-radius: 50%;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
       border: 2px solid rgba(255,255,255,0.5);
       object-fit: cover;
     }
@@ -197,7 +200,7 @@
       display: flex;
       justify-content: center;
       gap: 1rem;
-      margin: 1.2rem 0;
+      margin: 0.8rem 0 1rem 0;
     }
 
     .skill {
@@ -205,25 +208,8 @@
       border: 1px solid rgba(255,255,255,0.25);
       border-radius: 8px;
       padding: .4rem 1rem;
-      color: white; /* ✅ 텍스트 흰색 */
-    }
-
-    .sns {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-
-    .sns a {
       color: white;
-      text-decoration: none;
-      font-weight: bold;
-      transition: .3s;
-    }
-
-    .sns a:hover {
-      color: #ffd966;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     .back-btn {
@@ -235,7 +221,7 @@
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
       border: 1px solid rgba(255,255,255,0.3);
-      color: rgb(255, 255, 255);
+      color: white;
       font-size: 1.1rem;
       cursor: pointer;
       display: none;
@@ -282,13 +268,8 @@
       transition: all .6s var(--ease);
     }
 
-    .toggle-btn div::before {
-      top: -6px;
-    }
-
-    .toggle-btn div::after {
-      top: 6px;
-    }
+    .toggle-btn div::before { top: -6px; }
+    .toggle-btn div::after  { top: 6px; }
 
     .glass.expanded .toggle-btn div {
       transform: rotate(45deg);
@@ -336,12 +317,6 @@
       width: auto;
       vertical-align: middle;
     }
-
-    .emoji {
-      width: 32px;
-      height: 32px;
-      vertical-align: middle;
-    }
   </style>
 </head>
 
@@ -372,33 +347,33 @@
       <div class="about-section" id="aboutSection">
         <img src="profile.png" class="profile-img">
         <h1>itsuminn</h1>
-        <p>Beginner Guitarist / Programmer!<br>
-        (#1 Fan of Bocchi the Rock!){bocchicat}<br>
-        <br>
-        I usually play :<br>
-        Blue Archive<br>
-        Stella Sora (beta)<br>
-        Arknights : EndField (beta)<br>
-        World of Tanks (beta)<br>
-        Escape from Tarkov (beta)<br>
-        DCS World<br>
-        <br>
-        I usually use :<br>
-        Visual Studio Code<br>
-        Adobe PhotoShop<br>
-        Adobe LightRoom<br>
-        <br>
-        My gear :<br>
-        Gibson Les paul Custom{bocchiguitar}<br>
-        Marshall JCM900 4100 + 1960A{bocchismile}<br>
-        Nikon Z F Silver + Nikor  Z 28mm f2.8 SE<br>
-        Samsung Galaxy S24+<br>
-        <br>
-        (Always lazy and bored{bocchinoko})
-        </p>
-        <div class="skills">
-        </div>
-        <div class="sns">
+
+        <div class="about-scroll">
+          <p>
+            Beginner Guitarist / Programmer!<br>
+            (#1 Fan of Bocchi the Rock!){bocchicat}<br>
+            <br>
+            I usually play :<br>
+            Blue Archive<br>
+            Stella Sora (beta)<br>
+            Arknights : EndField (beta)<br>
+            World of Tanks (beta)<br>
+            Escape from Tarkov (beta)<br>
+            DCS World<br>
+            <br>
+            I usually use :<br>
+            Visual Studio Code<br>
+            Adobe PhotoShop<br>
+            Adobe LightRoom<br>
+            <br>
+            My gear :<br>
+            Gibson Les paul Custom{bocchiguitar}<br>
+            Marshall JCM900 4100 + 1960A{bocchismile}<br>
+            Nikon Z F Silver + Nikor Z 28mm f2.8 SE<br>
+            Samsung Galaxy S24+<br>
+            <br>
+            (Always lazy and bored{bocchinoko})
+          </p>
         </div>
       </div>
 
@@ -449,10 +424,12 @@
 
     aboutBtn.addEventListener('click', (e) => {
       e.preventDefault();
+
       glass.classList.add('about-mode');
       mainSection.style.display = 'none';
+
       replaceEmojis(aboutSection);
-      aboutSection.classList.add('active');
+      aboutSection.style.display = 'block';
       backBtn.classList.add('visible');
     });
 
@@ -463,57 +440,25 @@
 
     backBtn.addEventListener('click', () => {
       glass.classList.remove('about-mode');
-      aboutSection.classList.remove('active');
+      aboutSection.style.display = 'none';
       mainSection.style.display = 'block';
       backBtn.classList.remove('visible');
     });
 
-  const emojiMap = {
-    "{bocchicat}": "emojis/bocchicat.png",
-    "{bocchiguitar}": "emojis/bocchiguitar.png",
-    "{bocchinoko}": "emojis/bocchinoko.png",
-    "{bocchismile}": "emojis/bocchismile.png"
-  };
+    const emojiMap = {
+      "{bocchicat}": "emojis/bocchicat.png",
+      "{bocchiguitar}": "emojis/bocchiguitar.png",
+      "{bocchinoko}": "emojis/bocchinoko.png",
+      "{bocchismile}": "emojis/bocchismile.png"
+    };
 
-  function replaceEmojis(containerEl) {
-    if (!containerEl) return;
-
-    const walker = document.createTreeWalker(containerEl, NodeFilter.SHOW_TEXT, null);
-    const textNodes = [];
-    while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-    textNodes.forEach(node => {
-      let text = node.nodeValue;
-      let replaced = false;
+    function replaceEmojis(element) {
+      let html = element.innerHTML;
       for (const key in emojiMap) {
-        if (text.includes(key)) {
-          const parts = text.split(key);
-          const frag = document.createDocumentFragment();
-          parts.forEach((part, idx) => {
-            if (part) frag.appendChild(document.createTextNode(part));
-            if (idx < parts.length - 1) {
-              const img = document.createElement('img');
-              img.src = emojiMap[key];
-              img.className = 'emoji-inline';
-              img.alt = '';
-              frag.appendChild(img);
-            }
-          });
-          node.parentNode.replaceChild(frag, node);
-          replaced = true;
-          break;
-        }
+        html = html.replaceAll(key, `<img src="${emojiMap[key]}" class="emoji-inline">`);
       }
-    });
-  }
-
-  function replaceEmojis(element) {
-    let html = element.innerHTML;
-    for (const key in emojiMap) {
-      html = html.replaceAll(key, `<img src="${emojiMap[key]}" class="emoji-inline">`);
+      element.innerHTML = html;
     }
-    element.innerHTML = html;
-  }
   </script>
 </body>
 </html>
