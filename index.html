@@ -97,6 +97,7 @@
       font-size: 2.6rem;
       color: white;
       margin-bottom: 2rem;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     .links {
@@ -117,6 +118,7 @@
       font-size: 1.15rem;
       transition: 0.25s;
       white-space: nowrap;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     .links a:hover {
@@ -145,6 +147,7 @@
       font-size: 1.1rem;
       text-decoration: none;
       transition: 0.3s;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     .about-btn:hover {
@@ -155,8 +158,26 @@
       display: none;
       opacity: 0;
       transition: opacity .5s var(--ease);
-      color: white; /* ✅ 텍스트 흰색 */
+      color: white;
     }
+
+    .main-section,
+    .about-section {
+      transition: opacity .5s ease-in-out;
+      opacity: 1;
+    }
+
+    .main-section.fade-out,
+    .about-section.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .main-section.fade-in,
+    .about-section.fade-in {
+      opacity: 1;
+    }
+
 
     .about-section.active {
       display: block;
@@ -214,7 +235,7 @@
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
       border: 1px solid rgba(255,255,255,0.3);
-      color: white;
+      color: rgb(255, 255, 255);
       font-size: 1.1rem;
       cursor: pointer;
       display: none;
@@ -309,6 +330,18 @@
     .theme-toggle.rotate {
       transform: rotate(360deg);
     }
+
+    .emoji-inline {
+      height: 1.4em;
+      width: auto;
+      vertical-align: middle;
+    }
+
+    .emoji {
+      width: 32px;
+      height: 32px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 
@@ -340,7 +373,7 @@
         <img src="profile.png" class="profile-img">
         <h1>itsuminn</h1>
         <p>Beginner Guitarist / Programmer!<br>
-        (#1 Fan of Bocchi the Rock!)<br>
+        (#1 Fan of Bocchi the Rock!){bocchicat}<br>
         <br>
         I usually play :<br>
         Blue Archive<br>
@@ -356,16 +389,15 @@
         Adobe LightRoom<br>
         <br>
         My gear :<br>
-        Gibson Les paul Custom<br>
-        Marshall JCM900 4100 + 1960A<br>
+        Gibson Les paul Custom{bocchiguitar}<br>
+        Marshall JCM900 4100 + 1960A{bocchismile}<br>
         Nikon Z F Silver + Nikor  Z 28mm f2.8 SE<br>
         Samsung Galaxy S24+<br>
         <br>
-        (I want to attach emojis but im too lazy to add feature)
+        (Always lazy and bored{bocchinoko})
         </p>
         <div class="skills">
         </div>
-        <!-- ✅ YouTube, Discord 제거 -->
         <div class="sns">
         </div>
       </div>
@@ -419,6 +451,7 @@
       e.preventDefault();
       glass.classList.add('about-mode');
       mainSection.style.display = 'none';
+      replaceEmojis(aboutSection);
       aboutSection.classList.add('active');
       backBtn.classList.add('visible');
     });
@@ -434,6 +467,53 @@
       mainSection.style.display = 'block';
       backBtn.classList.remove('visible');
     });
+
+  const emojiMap = {
+    "{bocchicat}": "emojis/bocchicat.png",
+    "{bocchiguitar}": "emojis/bocchiguitar.png",
+    "{bocchinoko}": "emojis/bocchinoko.png",
+    "{bocchismile}": "emojis/bocchismile.png"
+  };
+
+  function replaceEmojis(containerEl) {
+    if (!containerEl) return;
+
+    const walker = document.createTreeWalker(containerEl, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    textNodes.forEach(node => {
+      let text = node.nodeValue;
+      let replaced = false;
+      for (const key in emojiMap) {
+        if (text.includes(key)) {
+          const parts = text.split(key);
+          const frag = document.createDocumentFragment();
+          parts.forEach((part, idx) => {
+            if (part) frag.appendChild(document.createTextNode(part));
+            if (idx < parts.length - 1) {
+              const img = document.createElement('img');
+              img.src = emojiMap[key];
+              img.className = 'emoji-inline';
+              img.alt = '';
+              frag.appendChild(img);
+            }
+          });
+          node.parentNode.replaceChild(frag, node);
+          replaced = true;
+          break;
+        }
+      }
+    });
+  }
+
+  function replaceEmojis(element) {
+    let html = element.innerHTML;
+    for (const key in emojiMap) {
+      html = html.replaceAll(key, `<img src="${emojiMap[key]}" class="emoji-inline">`);
+    }
+    element.innerHTML = html;
+  }
   </script>
 </body>
 </html>
